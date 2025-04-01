@@ -15,6 +15,7 @@ int bh_init(BinHeap* h, int size) {
 
 int bh_insert(BinHeap* h, bindij_node v) {
     if (h->capacity == h->length) return -1; // No resize for now.
+    h->length++;
     h->array[h->length - 1] = v;
     int i = h->length - 1;
     while ((i - 1) / 2 > 0) {
