@@ -1,0 +1,47 @@
+# depslib dependency file v1.0
+1743663855 source:/home/kali/Desktop/fyp/fyp/algorithms.c
+	"algorithms.h"
+	<limits.h>
+
+1743645588 /home/kali/Desktop/fyp/fyp/algorithms.h
+	<stdlib.h>
+	"commonnames.h"
+	"bh.h"
+
+1743663989 /home/kali/Desktop/fyp/fyp/commonnames.h
+	<stdio.h>
+
+1743645588 /home/kali/Desktop/fyp/fyp/bh.h
+	"commonnames.h"
+	<stdlib.h>
+
+1743663911 source:/home/kali/Desktop/fyp/fyp/bh.c
+	"bh.h"
+
+1743663211 source:/home/kali/Desktop/fyp/fyp/tests_bh.c
+	<assert.h>
+	<stdio.h>
+	<stdlib.h>
+	"bh.h"
+	"algorithms.h"
+
+1743661063 source:/home/kali/Desktop/fyp/fyp/main.c
+	<pthread.h>
+	<stdlib.h>
+
+1743665294 source:/home/kali/Desktop/fyp/fyp/adjlist.c
+	<stdio.h>
+	<stdlib.h>
+	"adjlist.h"
+
+1743665960 source:/home/kali/Desktop/fyp/fyp/test_all.c
+	<assert.h>
+	<stdio.h>
+	<stdlib.h>
+	"bh.h"
+	"algorithms.h"
+	"adjlist.h"
+
+1743664567 /home/kali/Desktop/fyp/fyp/adjlist.h
+	"commonnames.h"
+
