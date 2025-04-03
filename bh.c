@@ -18,7 +18,7 @@ int bh_insert(BinHeap* h, bindij_node v) {
     h->length++;
     h->array[h->length - 1] = v;
     int i = h->length - 1;
-    while ((i - 1) / 2 > 0) {
+    while (i > 0) {
         if (h->array[i].prio <  h->array[(i - 1) / 2].prio) {
             h->array[i] = h->array[(i-1)/2];
             h->array[(i-1)/2] = v;
@@ -30,24 +30,31 @@ int bh_insert(BinHeap* h, bindij_node v) {
 }
 
 bindij_node bh_pop(BinHeap* h) {
-    bindij_node res = h->array[0];
-    h->array[0] = h->array[h->length - 1];
+    if (h->length == 0) return (bindij_node){-1, -1}; // Error value.
+    bindij_node min = h->array[0];
     h->length--;
-    if (h->length == 0) return res;
-
+    h->array[0] = h->array[h->length];
     int i = 0;
-    while (i * 2 + 1 < h->length) {
-        int j = i * 2 + 1;
-        if (i * 2 + 2 < h->length && h->array[j+1].prio < h->array[j].prio) {
-            j = j + 1;
+    while (i < h->length) {
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
+        int smallest = i;
+        if (left < h->length && h->array[left].prio < h->array[smallest].prio) {
+            smallest = left;
         }
-        bindij_node tmp = h->array[i];
-        h->array[i] = h->array[j];
-        h->array[j] = tmp;
-        i = j;
+        if (right < h->length && h->array[right].prio < h->array[smallest].prio) {
+            smallest = right;
+        }
+        if (smallest != i) {
+            bindij_node temp = h->array[i];
+            h->array[i] = h->array[smallest];
+            h->array[smallest] = temp;
+            i = smallest;
+        } else {
+            break;
+        }
     }
-
-    return res;
+    return min;
 }
 
 int bh_delete(BinHeap* h) {
