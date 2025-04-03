@@ -19,8 +19,10 @@ $(OBJDIR)/main.o: bh.h main.c
 	@mkdir -p $(OBJDIR)
 	gcc -c main.c -o $@
 
-$(TARGETDIR)/tests: bh.h tests_bh.c
-	gcc tests_bh.c bh.c -o ${TARGETDIR}/tests
+$(TARGETDIR)/tests: bh.h tests_bh.c algorithms.h $(OBJDIR)/bh.o
+	@mkdir -p $(TARGETDIR)
+	@mkdir -p $(OBJDIR)
+	gcc tests_bh.c bh.c algorithms.c -o ${TARGETDIR}/tests
 
 clean:
-	rm -f $(OBJDIR)/*.o $(TARGETDIR)/main
+	rm -f $(OBJDIR)/*.o $(TARGETDIR)/*
