@@ -3,6 +3,22 @@
 #include "bh.h"
 #include "algorithms.h"
 
+void test_read_gr(int argc, char* argv[]) {
+    int numNodes = 0;
+    adjList* graph = read_adjlist_from_gr(GRAPH_FILE, &numNodes);
+    assert(graph != NULL);
+    // Check graph is correct somehow
+
+    // Free memory
+    free(distances.data);
+    for (int i = 0; i < numNodes; i++) {
+        free(graph[i].data);
+    }
+    free(graph);
+
+    return 0;
+}
+
 void test_binaryheap() {
     BinHeap heap;
     bh_init(&heap, 20);
@@ -60,5 +76,6 @@ void test_dijkstra() {
 int main(int argc, char* argv[]) {
     test_binaryheap();
     test_dijkstra();
+    test_read_gr();
     return 0;
 }
