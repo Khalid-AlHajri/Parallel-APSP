@@ -2,8 +2,21 @@
 #define ALGORITHMS_H
 #include <stdlib.h>
 #include "commonnames.h"
+#include <pthread.h>
 #include "bh.h"
 
 vector dijkstra(adjList* graph, int numNodes, int source);
+
+typedef struct {
+    adjList* graph;
+    int numNodes;
+    int startNode;
+    int numNodesToProcess;
+    vector* distancesArray;
+} DijkstraThreadArgs;
+
+void* dijkstra_thread(void* args);
+
+vector* parallel_dijkstra(adjList* graph, int numNodes, int nThreads);
 
 #endif
