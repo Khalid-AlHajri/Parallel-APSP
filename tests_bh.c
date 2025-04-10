@@ -2,21 +2,39 @@
 #include <stdio.h>
 #include "bh.h"
 #include "algorithms.h"
+#include "adjlist.h"
 
-void test_read_gr(int argc, char* argv[]) {
+#define GRAPH_TEST_READ "tests/test_read.gr"
+
+void test_read_gr() {
     int numNodes = 0;
-    adjList* graph = read_adjlist_from_gr(GRAPH_FILE, &numNodes);
+    FILE* test_file = fopen(GRAPH_TEST_READ, "r");
+    adjList* graph = read_adjlist_from_gr(test_file, &numNodes);
     assert(graph != NULL);
-    // Check graph is correct somehow
-
+    // We check the graph is correctly read by using a few metrics, and comparing with the expected values found in the test file.
+    // Number of nodes
+    assert(numNodes == 10);
+    // Sum of edge weight
+    int sum = 0;
+    for (int i = 0; i < numNodes; i++) {
+        for (int j = 0; j < graph[i].length; j++) {
+            sum += graph[i].data[j].prio;
+        }
+    }
+    assert(sum == 113);
+    // Number of edges
+    int numEdges = 0;
+    for (int i = 0; i < numNodes; i++) {
+        numEdges += graph[i].length;
+    }
+    assert(numEdges == 18);
+    
     // Free memory
-    free(distances.data);
     for (int i = 0; i < numNodes; i++) {
         free(graph[i].data);
     }
     free(graph);
 
-    return 0;
 }
 
 void test_binaryheap() {
