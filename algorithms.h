@@ -17,6 +17,6 @@ typedef struct {
 
 void* dijkstra_thread(void* args);
 
-vector* parallel_dijkstra(adjList* graph, int numNodes, int nThreads);
+vector* apsp_dijkstra(adjList* graph, int numNodes, int nThreads);
 
 #endif
