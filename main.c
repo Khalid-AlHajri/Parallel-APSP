@@ -6,15 +6,26 @@
 
 #include <pthread.h>
 #include <stdlib.h>
-
-typedef struct {
-    int length;
-    int* data;
-} vector;
+#include <stdio.h>
+#include "adjlist.h"
+#include "algorithms.h"
 
 
 int main(int argc, char* argv[]) {
+    int nodes = 0;
+    FILE* file = fopen("tests/graph.gr", "r");
+    adjList* graph = read_adjlist_from_gr(file, &nodes);
 
+    int tcount = 2;
+    if (argc == 2) tcount = atoi(argv[1]);
+    vector* res = apsp_dijkstra(graph, nodes, tcount);
 
+    for (int i = 0; i < nodes; i++) {
+        for (int j = 0; j < nodes; j++) {
+            printf("%d, ", res[i].data[j]);
+        }
+        printf("\n");
+    }
 
+    return 0;
 }

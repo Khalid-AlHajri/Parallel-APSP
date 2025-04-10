@@ -1,28 +1,30 @@
 OBJDIR = build
 TARGETDIR = bin
 
-.PHONY: all clean
+SOURCES = main.c bh.c algorithms.c adjlist.c
+OBJECTS = $(patsubst %.c,$(OBJDIR)/%.o,$(SOURCES))
+TEST_OBJS = $(OBJDIR)/tests_bh.o
+
+.PHONY: all clean tests
 
 all: $(TARGETDIR)/main
+
 tests: $(TARGETDIR)/tests
 
-
-$(TARGETDIR)/main: $(OBJDIR)/main.o $(OBJDIR)/bh.o
+# Link the main binary
+$(TARGETDIR)/main: $(OBJECTS)
 	@mkdir -p $(TARGETDIR)
 	gcc -o $@ $^
 
-$(OBJDIR)/bh.o: bh.h bh.c
+# Compile each .c to .o
+$(OBJDIR)/%.o: %.c
 	@mkdir -p $(OBJDIR)
-	gcc -c bh.c -o $@
+	gcc -c $< -o $@
 
-$(OBJDIR)/main.o: bh.h main.c
-	@mkdir -p $(OBJDIR)
-	gcc -c main.c -o $@
-
-$(TARGETDIR)/tests: bh.h tests_bh.c algorithms.h $(OBJDIR)/bh.o
+# Special target for test binary
+$(TARGETDIR)/tests: $(OBJDIR)/bh.o $(OBJDIR)/algorithms.o $(OBJDIR)/adjlist.o $(OBJDIR)/tests_bh.o
 	@mkdir -p $(TARGETDIR)
-	@mkdir -p $(OBJDIR)
-	gcc tests_bh.c bh.c algorithms.c -o ${TARGETDIR}/tests
+	gcc -o $@ $^
 
 clean:
-	rm -f $(OBJDIR)/*.o $(TARGETDIR)/*
+	rm -rf $(OBJDIR) $(TARGETDIR)
