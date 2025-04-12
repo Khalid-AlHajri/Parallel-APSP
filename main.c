@@ -24,14 +24,14 @@ void display_mat(vector* mat, int count) {
 int main(int argc, char* argv[]) {
     if (argc != 3) {
         printf("Usage: %s thread_count graph_file", argv[0]);
+        exit(-1);
     }
     int nodes = 0;
     struct timespec start, end;
     FILE* file = fopen(argv[2], "r");
     adjList* graph = read_adjlist_from_gr(file, &nodes);
 
-    int tcount = 2;
-    if (argc == 2) tcount = atoi(argv[1]);
+    int tcount = atoi(argv[1]);
 
     clock_gettime(CLOCK_MONOTONIC, &start);
     vector* res = apsp_dijkstra(graph, nodes, tcount);
