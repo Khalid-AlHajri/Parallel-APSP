@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include "adjlist.h"
 #include "algorithms.h"
+#include <time.h>
 
 // Display matrix
 void display_mat(vector* mat, int count) {
@@ -22,12 +23,20 @@ void display_mat(vector* mat, int count) {
 
 int main(int argc, char* argv[]) {
     int nodes = 0;
+    struct timespec start, end;
     FILE* file = fopen("tests/graph.gr", "r");
     adjList* graph = read_adjlist_from_gr(file, &nodes);
 
     int tcount = 2;
     if (argc == 2) tcount = atoi(argv[1]);
+
+    clock_gettime(CLOCK_MONOTONIC, &start);
     vector* res = apsp_dijkstra(graph, nodes, tcount);
+    clock_gettime(CLOCK_MONOTONIC, &end);
+
+    double elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+
+    printf("elapsed time: %.9f seconds\n", elapsed);
 
     return 0;
 }
