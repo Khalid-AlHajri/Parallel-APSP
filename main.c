@@ -10,6 +10,15 @@
 #include "adjlist.h"
 #include "algorithms.h"
 
+// Display matrix
+void display_mat(vector* mat, int count) {
+    for (int i = 0; i < count; i++) {
+        for (int j = 0; j < count; j++) {
+            printf("%d, ", mat[i].data[j]);
+        }
+        printf("\n");
+    }
+}
 
 int main(int argc, char* argv[]) {
     int nodes = 0;
@@ -19,13 +28,6 @@ int main(int argc, char* argv[]) {
     int tcount = 2;
     if (argc == 2) tcount = atoi(argv[1]);
     vector* res = apsp_dijkstra(graph, nodes, tcount);
-
-    for (int i = 0; i < nodes; i++) {
-        for (int j = 0; j < nodes; j++) {
-            printf("%d, ", res[i].data[j]);
-        }
-        printf("\n");
-    }
 
     return 0;
 }
