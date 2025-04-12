@@ -22,9 +22,12 @@ void display_mat(vector* mat, int count) {
 }
 
 int main(int argc, char* argv[]) {
+    if (argc != 3) {
+        printf("Usage: %s thread_count graph_file", argv[0]);
+    }
     int nodes = 0;
     struct timespec start, end;
-    FILE* file = fopen("tests/graph.gr", "r");
+    FILE* file = fopen(argv[2], "r");
     adjList* graph = read_adjlist_from_gr(file, &nodes);
 
     int tcount = 2;
