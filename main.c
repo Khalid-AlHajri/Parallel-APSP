@@ -10,16 +10,8 @@
 #include "adjlist.h"
 #include "algorithms.h"
 #include <time.h>
+#include "util.h"
 
-// Display matrix
-void display_mat(vector* mat, int count) {
-    for (int i = 0; i < count; i++) {
-        for (int j = 0; j < count; j++) {
-            printf("%d, ", mat[i].data[j]);
-        }
-        printf("\n");
-    }
-}
 
 int main(int argc, char* argv[]) {
     if (argc != 3) {
@@ -38,8 +30,6 @@ int main(int argc, char* argv[]) {
     clock_gettime(CLOCK_MONOTONIC, &end);
 
     double elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-
-    printf("elapsed time: %.9f seconds\n", elapsed);
 
     return 0;
 }

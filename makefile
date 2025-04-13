@@ -1,7 +1,7 @@
 OBJDIR = build
 TARGETDIR = bin
 
-SOURCES = main.c bh.c algorithms.c adjlist.c
+SOURCES = main.c bh.c algorithms.c adjlist.c util.c
 OBJECTS = $(patsubst %.c,$(OBJDIR)/%.o,$(SOURCES))
 TEST_OBJS = $(OBJDIR)/tests_bh.o
 
@@ -22,7 +22,7 @@ $(OBJDIR)/%.o: %.c
 	gcc -c $< -o $@
 
 # Special target for test binary
-$(TARGETDIR)/tests: $(OBJDIR)/bh.o $(OBJDIR)/algorithms.o $(OBJDIR)/adjlist.o $(OBJDIR)/tests_bh.o
+$(TARGETDIR)/tests: $(OBJDIR)/bh.o $(OBJDIR)/algorithms.o $(OBJDIR)/adjlist.o $(OBJDIR)/tests_bh.o $(OBJDIR)/util.o
 	@mkdir -p $(TARGETDIR)
 	gcc -o $@ $^
 
