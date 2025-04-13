@@ -2,60 +2,82 @@
 #include <limits.h> // For INT_MAX
 
 sp_vector dijkstra(adjList* graph, int numNodes, int source) {
-    vector distances;
-    vector parents;
     sp_vector res;
-    res.distances = distances;
-    res.parent = parents;
+    res.distances.length = numNodes;
+    res.parent.length = numNodes;
 
+    // Allocate memory for distances and parent arrays
+    res.distances.data = malloc(sizeof(int) * numNodes);
+    res.parent.data = malloc(sizeof(int) * numNodes);
 
-    distances.length = numNodes;
-    parents.length = numNodes;
-
-    distances.data = malloc(sizeof(int) * numNodes);
-    parents.data = malloc(sizeof(int) * numNodes);
-
-    for (int i = 0; i < numNodes; i++) {
-        distances.data[i] = INT_MAX;
-        parents.data[i] = -1;
+    if (!res.distances.data || !res.parent.data) {
+        // Handle memory allocation failure
+        free(res.distances.data);
+        free(res.parent.data);
+        res.distances.data = NULL;
+        res.parent.data = NULL;
+        return res;
     }
-    distances.data[source] = 0;
-    parents.data[source] = source;
 
+    // Initialize distances to INT_MAX and parents to -1
+    for (int i = 0; i < numNodes; i++) {
+        res.distances.data[i] = INT_MAX;
+        res.parent.data[i] = -1;
+    }
+    res.distances.data[source] = 0;
+    res.parent.data[source] = source;
+
+    // Initialize the binary heap
     BinHeap heap;
-    bh_init(&heap, numNodes);
+    if (!bh_init(&heap, numNodes)) {
+        // Handle heap initialization failure
+        free(res.distances.data);
+        free(res.parent.data);
+        res.distances.data = NULL;
+        res.parent.data = NULL;
+        return res;
+    }
 
+    // Insert the source node into the heap
     bindij_node sourceNode = {0, source};
     bh_insert(&heap, sourceNode);
-
+    int visited[numNodes];
+    for (int i = 0; i < numNodes; i++) {
+        visited[i] = 0; // Initialize visited array
+    }
+    // Process the heap
     while (heap.length > 0) {
-        // Pop the element with the highest priority (lowest expand cost)
+        // Extract the node with the smallest distance
         bindij_node current = bh_pop(&heap);
         int currentNode = current.node;
         int currentDistance = current.prio;
-
-        if (currentDistance > distances.data[currentNode]) {
-            // Skip current node if a better distance to it was found (i.e. expanded already)
+        
+        // Skip if a better distance to this node was already found
+        if (currentDistance > res.distances.data[currentNode]) {
             continue;
         }
 
+        // Iterate over the neighbors of the current node
         adjList neighbors = graph[currentNode];
         for (int i = 0; i < neighbors.length; i++) {
             bindij_node edge = neighbors.data[i];
             int neighbor = edge.node;
             int weight = edge.prio;
 
+            // Calculate the new distance to the neighbor
             int newDistance = currentDistance + weight;
 
-            if (newDistance < distances.data[neighbor]) { // If current node provides a better path to a neighboring node
-                distances.data[neighbor] = newDistance;
-                parents.data[neighbor] = currentNode;
+            // If the new distance is shorter, update it and add the neighbor to the heap
+            if (newDistance < res.distances.data[neighbor]) {
+                res.distances.data[neighbor] = newDistance;
+                res.parent.data[neighbor] = currentNode;
                 bindij_node neighborNode = {newDistance, neighbor};
                 bh_insert(&heap, neighborNode);
             }
         }
     }
 
+    // Clean up the heap
     bh_delete(&heap);
 
     return res;
