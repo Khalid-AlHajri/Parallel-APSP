@@ -1,15 +1,26 @@
 #include "algorithms.h"
 #include <limits.h> // For INT_MAX
 
-vector dijkstra(adjList* graph, int numNodes, int source) {
+sp_vector dijkstra(adjList* graph, int numNodes, int source) {
     vector distances;
+    vector parents;
+    sp_vector res;
+    res.distances = distances;
+    res.parent = parents;
+
+
     distances.length = numNodes;
+    parents.length = numNodes;
+
     distances.data = malloc(sizeof(int) * numNodes);
+    parents.data = malloc(sizeof(int) * numNodes);
 
     for (int i = 0; i < numNodes; i++) {
         distances.data[i] = INT_MAX;
+        parents.data[i] = -1;
     }
     distances.data[source] = 0;
+    parents.data[source] = source;
 
     BinHeap heap;
     bh_init(&heap, numNodes);
@@ -18,11 +29,13 @@ vector dijkstra(adjList* graph, int numNodes, int source) {
     bh_insert(&heap, sourceNode);
 
     while (heap.length > 0) {
+        // Pop the element with the highest priority (lowest expand cost)
         bindij_node current = bh_pop(&heap);
         int currentNode = current.node;
         int currentDistance = current.prio;
 
         if (currentDistance > distances.data[currentNode]) {
+            // Skip current node if a better distance to it was found (i.e. expanded already)
             continue;
         }
 
@@ -34,8 +47,9 @@ vector dijkstra(adjList* graph, int numNodes, int source) {
 
             int newDistance = currentDistance + weight;
 
-            if (newDistance < distances.data[neighbor]) {
+            if (newDistance < distances.data[neighbor]) { // If current node provides a better path to a neighboring node
                 distances.data[neighbor] = newDistance;
+                parents.data[neighbor] = currentNode;
                 bindij_node neighborNode = {newDistance, neighbor};
                 bh_insert(&heap, neighborNode);
             }
@@ -44,7 +58,7 @@ vector dijkstra(adjList* graph, int numNodes, int source) {
 
     bh_delete(&heap);
 
-    return distances;
+    return res;
 }
 
 void* dijkstra_thread(void* args) {
@@ -55,23 +69,23 @@ void* dijkstra_thread(void* args) {
     int numNodes = threadArgs->numNodes;
     int startNode = threadArgs->startNode;
     int numNodesToProcess = threadArgs->numNodesToProcess;
-    vector* distancesArray = threadArgs->distancesArray;
+    sp_vector* apsp_matrix = threadArgs->apsp_matrix;
 
     // Perform Dijkstra's algorithm for each node in the range
     for (int i = startNode; i < startNode + numNodesToProcess; i++) {
         if (i >= numNodes) {
             break; // Ensure we don't go out of bounds
         }
-        distancesArray[i] = dijkstra(graph, numNodes, i);
+        apsp_matrix[i] = dijkstra(graph, numNodes, i);
     }
 
     return NULL; // Thread function must return NULL
 }
 
-vector* apsp_dijkstra(adjList* graph, int numNodes, int nThreads) {
+sp_vector* apsp_dijkstra(adjList* graph, int numNodes, int nThreads) {
     // Allocate memory for the distances matrix
-    vector* distancesArray = malloc(sizeof(vector) * numNodes);
-    if (!distancesArray) {
+    sp_vector* apsp_matrix = malloc(sizeof(sp_vector) * numNodes);
+    if (!apsp_matrix) {
         return NULL; // Return NULL if memory allocation fails
     }
 
@@ -90,7 +104,7 @@ vector* apsp_dijkstra(adjList* graph, int numNodes, int nThreads) {
     threadArgs[0].numNodes = numNodes;
     threadArgs[0].startNode = currentStartNode;
     threadArgs[0].numNodesToProcess = nodesPerThread + (remainingNodes > 0 ? 1 : 0); // Distribute remaining nodes
-    threadArgs[0].distancesArray = distancesArray;
+    threadArgs[0].apsp_matrix = apsp_matrix;
 
     currentStartNode += threadArgs[0].numNodesToProcess;
 
@@ -100,7 +114,7 @@ vector* apsp_dijkstra(adjList* graph, int numNodes, int nThreads) {
         threadArgs[i].numNodes = numNodes;
         threadArgs[i].startNode = currentStartNode;
         threadArgs[i].numNodesToProcess = nodesPerThread + (i < remainingNodes ? 1 : 0); // Distribute remaining nodes
-        threadArgs[i].distancesArray = distancesArray;
+        threadArgs[i].apsp_matrix = apsp_matrix;
 
         pthread_create(&threads[i - 1], NULL, dijkstra_thread, &threadArgs[i]);
 
@@ -115,5 +129,5 @@ vector* apsp_dijkstra(adjList* graph, int numNodes, int nThreads) {
         pthread_join(threads[i], NULL);
     }
 
-    return distancesArray;
+    return apsp_matrix;
 }

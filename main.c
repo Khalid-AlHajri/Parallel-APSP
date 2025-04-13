@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
     int tcount = atoi(argv[1]);
 
     clock_gettime(CLOCK_MONOTONIC, &start);
-    vector* res = apsp_dijkstra(graph, nodes, tcount);
+    sp_vector* res = apsp_dijkstra(graph, nodes, tcount);
     clock_gettime(CLOCK_MONOTONIC, &end);
 
     double elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;

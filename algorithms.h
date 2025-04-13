@@ -5,18 +5,18 @@
 #include <pthread.h>
 #include "bh.h"
 
-vector dijkstra(adjList* graph, int numNodes, int source);
+sp_vector dijkstra(adjList* graph, int numNodes, int source);
 
 typedef struct {
     adjList* graph;
     int numNodes;
     int startNode;
     int numNodesToProcess;
-    vector* distancesArray;
+    sp_vector* apsp_matrix;
 } DijkstraThreadArgs;
 
 void* dijkstra_thread(void* args);
 
-vector* apsp_dijkstra(adjList* graph, int numNodes, int nThreads);
+sp_vector* apsp_dijkstra(adjList* graph, int numNodes, int nThreads);
 
 #endif

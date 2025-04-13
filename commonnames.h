@@ -16,4 +16,10 @@ typedef struct adjList{
     bindij_node* data;
 } adjList;
 
+// A vector that contains the shortest distance to node[i] and can be used to build that path to that node.
+typedef struct sp_vector{
+    vector distances;
+    vector parent; // parent[i] is the node that leads to node i.
+} sp_vector;
+
 #endif
