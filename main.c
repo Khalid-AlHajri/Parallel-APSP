@@ -12,6 +12,9 @@
 #include <time.h>
 #include "util.h"
 
+#ifndef CLOCK_MONOTONIC
+#define CLOCK_MONOTONIC 0
+#endif
 
 int main(int argc, char* argv[]) {
     if (argc != 3) {
@@ -30,6 +33,6 @@ int main(int argc, char* argv[]) {
     clock_gettime(CLOCK_MONOTONIC, &end);
 
     double elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-
+    printf("Elapsed time: %f seconds\n", elapsed);
     return 0;
 }
