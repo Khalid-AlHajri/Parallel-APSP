@@ -14,7 +14,7 @@ tests: $(TARGETDIR)/tests
 # Link the main binary
 $(TARGETDIR)/main: $(OBJECTS)
 	@mkdir -p $(TARGETDIR)
-	gcc -o $@ $^
+	gcc -o $@ $^ -O3
 
 # Compile each .c to .o
 $(OBJDIR)/%.o: %.c
