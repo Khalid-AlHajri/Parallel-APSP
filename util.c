@@ -1,8 +1,8 @@
 #include "util.h"
 
-void display_mat(sp_vector* mat, int count) {
-    for (int i = 0; i < count; i++) {
-        for (int j = 0; j < count; j++) {
+void display_mat(sp_vector* mat, int nodeCount) {
+    for (int i = 0; i < nodeCount; i++) {
+        for (int j = 0; j < nodeCount; j++) {
             printf("%d ", mat[i].distances.data[j]);
         }
     }
