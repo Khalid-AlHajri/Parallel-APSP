@@ -17,7 +17,10 @@ def graph_read_process(fpath):
     resmat = {k:v for k,v in resmat}
     for i in sorted(G.nodes):
         for j in sorted(G.nodes):
-            weight = resmat[i][j]
+            try:
+                weight = resmat[i][j]
+            except KeyError:
+                weight = 2**31 - 1
             strres = strres + str(weight) + " "
     return strres
 
@@ -28,8 +31,8 @@ while True:
     fpath = '/tmp/' + curr_name
     # Generate the graph & save it on temporary storage
     subprocess.run(
-        ["python3", "gen_random_graph.py", "--weight_min", "1", "--weight_max", "10", "--density", ".90",
-         "--nodes", "5", "--output", fpath]
+        ["python3", "gen_random_graph.py", "--weight_min", "1", "--weight_max", "1000", "--density", ".10",
+         "--nodes", "600", "--output", fpath]
     )
 
     # Run python script on it and result.
@@ -38,7 +41,7 @@ while True:
     program_name = './bin/validation_test'
     try:
         resc = subprocess.run(
-        [program_name, '1', fpath],
+        [program_name, str(random.randint(1, 32)), fpath],
         capture_output=True,
         text=True,
         check=True
@@ -52,7 +55,7 @@ while True:
     try:
         assert text == respy.strip()
     except AssertionError as e:
-        print(f"Iteration {i} failed. Dumping original Graph.")
+        print(f"Iteration {i} failed. Dumping original graph.")
         with open("graphdump", 'w') as f:
             f.write(open(fpath, 'r').read())
         os.remove(fpath)
