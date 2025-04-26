@@ -14,7 +14,12 @@ int bh_init(BinHeap* h, int size) {
 }
 
 int bh_insert(BinHeap* h, bindij_node v) {
-    if (h->capacity == h->length) return -1; // No resize for now.
+    if (h->capacity == h->length) {
+        bindij_node* new_array = realloc(h->array, sizeof(bindij_node) * h->capacity * 2);
+        if (new_array == NULL) exit(-1); // Handle memory allocation failure.
+        h->array = new_array;
+        h->capacity *= 2;
+    }
     h->length++;
     h->array[h->length - 1] = v;
     int i = h->length - 1;
